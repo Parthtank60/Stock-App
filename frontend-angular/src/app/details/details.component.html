@@ -1,0 +1,439 @@
+<!-- <app-search></app-search> -->
+<div style=" margin-top: 4rem;">
+    <h1 id="proj-title" class="text-center">Stock Search</h1>
+          <form  class="justify-content-center d-flex" [formGroup]="searchField" (ngSubmit)="onSubmit(searchField.value)">
+            <div class="input-group search-bar align-baseline rounded rounded-pill pl-3 class main-container">
+              <!-- <mat-form-field> -->
+              <input placeholder="Enter Stock Ticker symbol" class="border-0 m-0 p-0 form-control" matInput [formControl]="myRecommendation" [matAutocomplete]="auto" formControlName="textInput">
+              <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayTicker">
+                <mat-option *ngIf="recommendationLoading" class="is-loading"><mat-spinner diameter="20"></mat-spinner></mat-option>
+                <ng-container *ngIf="!recommendationLoading"></ng-container>
+                <mat-option *ngFor=" let recommendation of recommendations" [value]="recommendation">
+                  <span>{{recommendation.symbol}}</span>
+                  <small> | {{recommendation.description}}</small>
+                </mat-option>
+              </mat-autocomplete>
+            <!-- </mat-form-field> -->
+              <svg height="15" width = "15" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="search" class=" search-button svg-inline--fa fa-search fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" (click)="onSubmitClick(searchField.value)">
+                <path fill="currentColor" d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"></path>
+              </svg>
+              <svg style="margin:0" height="15" width = "15" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="times" class="cross-button svg-inline--fa fa-times fa-w-11" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512" (click)="eraseInput()">
+                <path fill="currentColor" d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path>
+              </svg>
+            </div>
+          </form>
+      
+    
+    <div *ngIf = 'this.ifblock' class="alert alert-warning" id="nostock" role="alert" >
+        Please Enter a Ticker First! chutiye
+    </div>
+    </div>
+<div *ngIf="!isTickerValid" class="alert alert-danger mat-body-1 w-responsive text-center mx-auto mt-5" id="invalid-ticker" role="alert">
+    No results found. Please enter valid Ticker
+</div>
+
+<div *ngIf="isTickerValid" class="container  my-5 " style="padding: 0% 5%;">
+    <div class="container" >
+      <div class="row">
+        <div class="col-sm-4 ">
+          <p class="company-ticker">
+            {{company_details['ticker']}}
+            <i id="starIcon" (click)="setOrRemoveFrmWl(company_details['ticker'])">
+                <svg *ngIf="!isInWL" width="1em" height="0.7em" viewBox="0 0 16 16" class="bi bi-star align-top" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.523-3.356c.329-.314.158-.888-.283-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767l-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288l1.847-3.658 1.846 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.564.564 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
+                </svg>
+                <svg *ngIf="isInWL" width="1em" height="0.7em" viewBox="0 0 16 16" class="bi bi-star-fill align-top" fill="#fdd50b" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.283.95l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                </svg>
+            </i></p>
+          
+          <p class="text-muted company-name mb-2">{{company_details['name']}}</p>
+          <p>{{company_details['exchangecode']}}</p>
+          <p >
+            <button style="margin-right:1rem; width: 4rem;"type="button" class="btn btn-success" (click)="openModal(buycontent)">Buy</button>
+            <button *ngIf='isInPr' style="width: 4rem" type="button" class="btn btn-danger ml-2" (click)="openSellModal(sellcontent, company_details['ticker'])">Sell</button>
+          </p>
+          <ng-template #buycontent let-modal>
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-basic-title">{{company_details['ticker']}}
+                </h3>
+                <button style="margin-bottom: 0.5em;"  type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                    <span  aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body modal-content">
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+                            <label>Current Price: {{Company_LatestPrice['currentPrice']}}</label>
+                        </div>
+                        <!-- <div class="col">
+                            <label [(ngModel)]="walletamount"></label>
+                        </div> -->
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label>Money in Wallet: {{walletamount | number: '1.1-2'}}</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class=" col-sm-2 quantity-label" style="margin-top:0.5em">
+                            <label for="quantity">Quantity </label>
+                        </div>
+                        <div class=" col-sm-5">
+                            <input type='number' class="form-control" required id="quantity" name="quantity"
+                                [(ngModel)]="quantity">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <p style="padding-top: 0.5em;" class="text-danger" *ngIf= "(Company_LatestPrice['currentPrice'] * quantity) > walletamount"> 
+                            Not enough money in the wallet!
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="container">
+                    <div class="row justify-content-space-between">
+                        <div class="col">
+                            <label>Total : {{ Company_LatestPrice['currentPrice'] * quantity | number: '1.1-2'}}</label>
+                        </div>
+                        <div class="col text-end">
+                            <button type="button" class="btn btn-success" [disabled]="quantity<1 || (Company_LatestPrice['currentPrice'] * quantity) > walletamount"
+                                (click)="closeModal()">Buy</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+
+
+        <ng-template #sellcontent let-modal>
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-basic-title">{{company_details['ticker']}}
+                </h3>
+                <button  style="margin-bottom: 0.5em;" type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                    <span  aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body modal-content">
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+                            <label>Current Price: {{Company_LatestPrice['currentPrice']}}</label>
+                        </div>
+                      
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label>Money in Wallet: {{walletamount | number: '1.1-2'}}</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class=" col-sm-2 quantity-label" style="margin-top:0.5em">
+                            <label for="quantity">Quantity </label>
+                        </div>
+                        <div class="col-sm-5">
+                            <input type='number' class="form-control" required id="quantity" name="quantity"
+                                [(ngModel)]="quantity">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <p style="padding-top: 0.5em;" class="text-danger" *ngIf= "quantity>maxsellqnt"> 
+                            You Cannot Sell quantity you dont have!
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="container">
+                    <div class="row justify-content-space-between">
+                        <div class="col">
+                            <label>Total : {{ Company_LatestPrice['currentPrice'] * quantity | number: '1.1-2'}}</label>
+                        </div>
+                        <div class="col text-end">
+                            <button type="button" class="btn btn-danger" [disabled]="quantity<1 || quantity>maxsellqnt"
+                                (click)="closesellModal()">Sell</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+
+        </div>
+        <div class="col-sm-4 ">
+          <p class="company-ticker center-column">
+           <img src="{{company_details['logo']}}" height="50" width="50">
+          </p>
+        </div>
+        <div class="col-sm-4 text-end">
+          <span *ngIf="Company_LatestPrice['change'] > 0; else elseBlock">
+            <p class="company-ticker pos-color">
+              {{Company_LatestPrice['currentPrice']| number :'1.2-2'}}
+             </p>
+             <p class="change-percent pos-color">
+               {{Company_LatestPrice['change'] | number :'1.2-2'}}{{" "}}({{Company_LatestPrice['percentageChange']}}%)
+              </p>
+          </span>
+          <ng-template #elseBlock>
+            <span class="card-title inline-style neg-change">
+              <p class="company-ticker neg-color">
+                {{Company_LatestPrice['currentPrice']}}
+               </p>
+               <p class="change-percent neg-color">
+                 {{Company_LatestPrice['change']}}{{" "}}({{Company_LatestPrice['percentageChange']}}%)
+                </p>
+            </span>
+          </ng-template>
+  
+           <p class="timestamp">
+            {{Company_LatestPrice['timestamp'] | date:'yyyy-mm-dd HH:MM:SS'}}
+           </p>
+        </div>
+      </div>
+    </div>
+    <!-- <div class="container my-2">
+      <mat-tab-group mat-stretch-tabs>
+        <mat-tab label="Summary">Summary</mat-tab>
+        <mat-tab label="Top News">Top News</mat-tab>
+        <mat-tab label="Charts">Charts</mat-tab>
+        <mat-tab label="Insights">Insights</mat-tab>
+      </mat-tab-group>
+    </div> -->
+    <div class="container my-2">
+        <mat-tab-group mat-stretch-tabs>
+          <mat-tab label="Summary">
+            <div class="container my-3">
+              <div class="row">
+                <div class="col-6">
+                  <div class="container ml-5">
+                    <p>
+                      <strong>High Price:</strong> {{Company_LatestPrice['highprice']}}
+                     </p>
+                     <p>
+                      <strong>Low Price:</strong> {{Company_LatestPrice['lowprice']}}
+                     </p>
+                     <p>
+                      <strong>Open Price:</strong> {{Company_LatestPrice['openprice']}}
+                     </p>
+                     <p>
+                      <strong>Prev Close:</strong> {{Company_LatestPrice['previousclose']}}
+                     </p>
+                  </div>
+                  <p class="about-text"><strong>About the Company</strong></p>
+                  <p>
+                    <strong>IPO Start Date :</strong> {{company_details['ipo']}}
+                   </p>
+                   <p>
+                    <strong>Industry:</strong> {{company_details['industry']}}
+                   </p>
+                   <p>
+                    <strong>Webpage :</strong><a href="{{company_details['weburl']}}"> {{company_details['weburl']}}</a>
+                   </p>
+                   <p>
+                    <strong>Company Peers: </strong><br>
+                     <span *ngFor=" let peer of peers ">
+                       <a [routerLink]="['/search', peer]" style="text-decoration:none">{{peer + "  "}}</a>
+                   </span>
+                   </p>
+              </div>
+              <div class="col-6">
+                <highcharts-chart
+                [Highcharts]="Highcharts"
+            [constructorType]="chartsConstructor"
+            [options] = "hourlyChartOptions"
+            style = "width:30rem ; height: 22rem; display: block">
+            </highcharts-chart>
+              </div>
+              </div>
+
+            </div>
+          </mat-tab>
+          <mat-tab label="Top News">
+            <div class="container">
+                <div class="row">
+                  <div class="col-6">
+                    <div *ngFor="let i of [1,3,5,7,9,11,13,15,17,19]">
+                        <div class="card my-3">
+                          <div class="card-body" (click)="openSm(content)">
+                            <div class="container">
+                              <div class="row">
+                                <div class="col-sm-4">
+                                  <img width="80" height='60' [src]="newsArticles[i].image" alt="This is an image">
+                                </div>
+                                <div class="col-sm-8 text-left">
+                                  <p class="news-headline">{{newsArticles[i].headline}}</p>
+                                </div>
+                              </div>
+                            </div>
+                            <ng-template #content let-modal>
+      
+                              <div class="modal-header flex-column position-relative" style="align-items: start;">
+                                  
+                                <h1 style="font-weight: bold;" class="modal-title mb-0">{{newsArticles[i].source}}</h1> 
+                                
+                                <p class="modal-subtitle mb-0" style="margin-top:0 !important">{{newsArticles[i].datetime*1000 | date:'MMM d, y'}}</p>
+
+                                <button  type="button"class="close position-absolute" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                                    <span  aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+      
+      
+                              <div class="modal-body">
+                                <h3 style="margin-bottom: 0rem; font-weight: bold;">{{newsArticles[i].headline}}</h3>
+                                <p>{{newsArticles[i].summary}}</p>
+                                <span class="text-muted">For More Details click </span><a [href]="newsArticles[i].url">here</a>
+                                <div class="card">
+                                  <div class="card-body">
+                                    Share <br><br>
+                                    <a [href]="'https://twitter.com/intent/tweet?text='+newsArticles[i].headline+'%10'+newsArticles[i].url"><svg class="twitter-button" height="20" width ="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"/></svg>
+                                    </a>
+                                    <a target="_blank" [href]="'https://www.facebook.com/sharer/sharer.php?u=' + newsArticles[i].url">
+                                      <svg class = "fb-button" height="20" width ="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M400 32H48A48 48 0 0 0 0 80v352a48 48 0 0 0 48 48h137.25V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.27c-30.81 0-40.42 19.12-40.42 38.73V256h68.78l-11 71.69h-57.78V480H400a48 48 0 0 0 48-48V80a48 48 0 0 0-48-48z"/></svg>
+                                      </a>
+                                    </div>
+                                </div>
+                              </div>
+                             
+                            </ng-template>
+    
+                      </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div *ngFor="let i of [0, 2,4,6,8,10,12,14,16,18]">
+                       <div class="card my-3">
+                          <div class="card-body" (click)="openSm(content)">
+                            <div class="container">
+                              <div class="row">
+                                <div class="col-sm-4">
+                                  <img width="80" height='60' [src]="newsArticles[i].image" alt="text">
+                                </div>
+                                <div class="col-sm-8 text-left">
+                                  <p class="news-headline">{{newsArticles[i].headline}}</p>
+                                </div>
+                              </div>
+                            </div>
+                            <ng-template #content let-modal>
+      
+                                <div class="modal-header flex-column position-relative" style="align-items: start;">
+                                  
+                                    <h1 style="font-weight: bold;" class="modal-title mb-0">{{newsArticles[i].source}}</h1> 
+                                    
+                                    <p class="modal-subtitle mb-0" style="margin-top:0 !important">{{newsArticles[i].datetime*1000 | date:'MMM d, y'}}</p>
+    
+                                    <button  type="button"class="close position-absolute" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                                        <span  aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+      
+      
+                              <div class="modal-body">
+                                <h3 style="margin-bottom: 0rem; font-weight: bold;">{{newsArticles[i].headline}}</h3>
+                                <p>{{newsArticles[i].summary}}</p>
+                                <span class="text-muted">For More Details click </span><a [href]="newsArticles[i].url">here</a>
+                                <div class="card">
+                                  <div class="card-body">
+                                    Share <br><br>
+                                    <a [href]="'https://twitter.com/intent/tweet?text='+newsArticles[i].headline+'%10'+newsArticles[i].url"><svg class="twitter-button" height="20" width ="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"/></svg>
+                                    </a>
+                                    <a target="_blank" [href]="'https://www.facebook.com/sharer/sharer.php?u=' + newsArticles[i].url">
+                                      <svg class = "fb-button" height="20" width ="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M400 32H48A48 48 0 0 0 0 80v352a48 48 0 0 0 48 48h137.25V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.27c-30.81 0-40.42 19.12-40.42 38.73V256h68.78l-11 71.69h-57.78V480H400a48 48 0 0 0 48-48V80a48 48 0 0 0-48-48z"/></svg>
+                                      </a>
+                                    </div>
+                                </div>
+                              </div>
+                             
+                            </ng-template>
+      
+                      </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+          </mat-tab>
+          <mat-tab label="Charts">
+            <ng-template matTabContent>
+                <highcharts-chart
+                [Highcharts]="Highcharts"
+                [constructorType]="chartsConstructor"
+                [options]="ohlcCHarts"
+                style="width: 100%; height: 500px; display: block;"
+              ></highcharts-chart>
+              </ng-template>
+          </mat-tab>
+          <mat-tab label="Insights">
+            <div class="container my-3">
+              <p class="senti-table-heading">Social Sentiments</p>
+              <div class="row" style="padding-right: 20em; padding-left: 20em;">
+                <div class="container">
+                  <table class="table table-bordered .w-auto">
+                    <thead class="thead-light">
+                      <tr>
+                        <th scope="col"class="text-center">#</th>
+                        <th scope="col" class="text-center">Reddit</th>
+                        <th scope="col" class="text-center">Twitter</th>
+                        <!-- <th scope="col">Handle</th> -->
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <th scope="row" class="text-center table-active">Total Mentions</th>
+                        <td class="text-center">{{tot_mention_red}}</td>
+                        <td class="text-center">{{tot_mention_twi}}</td>
+                        <!-- <td>@mdo</td> -->
+                      </tr>
+                      <tr>
+                        <th scope="row table-active" class="text-center table-active">Positive Mentions</th>
+                        <td class="text-center">{{pos_mention_red}}</td>
+                        <td class="text-center">{{pos_mention_twi}}</td>
+                        <!-- <td>@fat</td> -->
+                      </tr>
+                      <tr>
+                        <th scope="row table-active" class="text-center table-active">Negative Mentions</th>
+                        <td class="text-center">{{neg_mention_red}}</td>
+                        <td class="text-center">{{neg_mention_twi}}</td>
+                        <!-- <td>@twitter</td> -->
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                    <highcharts-chart
+              [Highcharts]="Highcharts"
+              [options]="recommendationChart"
+              style="width:30rem ; height: 22rem; display: block;"
+            ></highcharts-chart>
+                    <!-- <highcharts-chart
+                    [Highcharts]="Highcharts"
+                [constructorType]="chartsConstructor"
+                [options] = "TrendChartOptions"
+                style = "width:30rem ; height: 22rem; display: block">
+                </highcharts-chart> -->
+                </div>
+                <div class="col-6">
+                    <highcharts-chart
+                    [Highcharts]="Highcharts"
+                    [options]="earningsChart"
+                    style="width: 100%; height: 400px; display: block;"
+                  ></highcharts-chart>
+                  </div>
+              </div>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+    </div>
+    <!-- <highcharts-chart
+                [Highcharts]="Highcharts"
+                [constructorType]="chartsConstructor"
+                [options] = "hourlyChartOptions"
+                style = "width:30rem ; height: 22rem; display: block">
+              </highcharts-chart> -->
+  <!-- </div> -->
+

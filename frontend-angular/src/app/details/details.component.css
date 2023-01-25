@@ -1,0 +1,162 @@
+/* .main-details-component{
+    margin-top: 30px;
+}
+.main-details-component{
+    width: 80%;
+}
+
+.overview{
+    height: 180px;
+}
+
+.market-status{
+    height: 40px;
+}
+
+.details-navbar .item1, .item2, .item3, .item4 {
+    border-bottom: 3px solid black;
+}
+
+.overview .text-right{
+    text-align: right;
+}
+
+.overview .img-center{
+    text-align: center;
+}
+
+
+.company-ticker{
+    font-weight: bolder;
+    font-size: 2em;
+  }
+  
+  .company-name{
+    font-weight: bolder;
+    font-size: 1.5em;
+  }
+  .center-column{
+    text-align: center;
+  }
+  .change-percent{
+    font-weight: bolder;
+    font-size: 1.5em;
+  }
+  .pos-color{
+    color:#178720;
+  }
+  .neg-color{
+    color: #ad0916;
+  } */
+
+  /* .container{
+    margin-top: 3rem;
+    width:30rem;
+  } */
+  form{
+    align-items: center;
+    margin:0 auto;
+  }
+  .search-bar{
+    width: 25rem;
+    align-items: center;
+    align-self: center;
+  }
+  .search-button{
+    margin:0  0.5rem !important;
+  }
+  .cross-button{
+    margin: 0 0.5rem !important;
+  }
+  input{
+    border: none;
+    margin-left: 1rem !important;
+  }
+  .input-group{
+    display: flex;
+    border-color: #4433CC;
+    border-style: solid;
+    border-width: medium;
+    height: 2rem;
+    border-radius: 2rem;
+  }
+  .form-control{
+    align-items: center;
+    margin-left: 1rem;
+    height: 1rem;
+    font-size: 0.9rem;
+    margin-top: 0.25rem;
+    width: 15rem;
+  }
+  .form-control:focus{
+    border: none;
+    box-shadow: none;
+  }
+  .input-group-append{
+    display: flex;
+  }
+  .search-symbol{
+    /* margin-top:0.05rem; */
+    height: 2rem;
+    width :2 rem;
+    margin-bottom: 0.5rem;
+    background-color: transparent;
+    border-color: #ccc;
+    border: none;
+    filter: invert(14%) sepia(100%) saturate(4134%) hue-rotate(249deg) brightness(85%) contrast(88%);
+  }
+  .search-symbol:focus{
+    border: none;
+    box-shadow: none;
+  }
+  .erase-symbol{
+    margin-right: 0.1rem;
+    margin-top:0.15rem;
+    background-color: transparent;
+    border-color: #ccc;
+    border:none;
+  filter: invert(14%) sepia(100%) saturate(4134%) hue-rotate(249deg) brightness(85%) contrast(88%);
+  }
+  .erase-symbol:focus{
+    border: none;
+    box-shadow: none;
+  }
+
+
+  .company-ticker{
+    font-weight: bolder;
+    font-size: 2em;
+  }
+  .company-name{
+    font-weight: bolder;
+    font-size: 1.5em;
+  }
+  .center-column{
+    text-align: center;
+  }
+  .change-percent{
+    font-weight: bolder;
+    font-size: 1.5em;
+  }
+  .pos-color{
+    color:#178720;
+  }
+  .neg-color{
+    color: #AD0916;
+  }
+  .about-text{
+    text-align: center;
+    font-size: 1.2em;
+  }
+  .senti-table-heading{
+    font-weight: bold;
+    font-size: 1.5em;
+    text-align: center;
+  }
+  .buy-button{
+    margin-right: 0.5rem;
+  }
+
+  .close{
+    right:0.5em;
+  }

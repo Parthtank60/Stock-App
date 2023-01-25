@@ -1,0 +1,17 @@
+.value{
+    float:right;
+}
+
+.float-right{
+    float: right;
+}
+.buy-button{
+    margin-right: 1.5em;
+    /* padding-right: 0.5em; */
+    /* color: white; */
+}
+
+.card-header{
+    margin: 0rem;
+}
+

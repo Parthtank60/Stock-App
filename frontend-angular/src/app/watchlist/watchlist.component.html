@@ -1,0 +1,89 @@
+<!-- 
+<div>[{{stocks | json}}]</div>
+<div *ngFor="let stock of watchlist_stocks">
+    {{stock[1]}}
+</div> -->
+
+<div class="container" style="padding: 0% 10%; margin-top: 4rem;">
+    <div class="container-fluid">
+      <h1>My Watchlist</h1>
+    </div>
+    <div *ngIf="this.watchlist_stocks.length===0; else elseBlock">
+      <div class='alert alert-warning'>
+        Currently you don't have any stock in your watchlist
+      </div>
+      <!-- <p>
+        <ngb-alert>
+          Currently you don't have any stock in your watchlist
+        </ngb-alert>
+      </p> -->
+    </div>
+    <ng-template #elseBlock>
+      <div *ngFor="let comp of watchlist_stocks">
+        <!-- <div class="container-fluid d-flex justify-content-between"> -->
+  
+            <div class="card" style="margin-top: 1.5rem;">
+              <div class="card-body" id="{{ 'wlcard' + comp[0] }}" style="padding-top: 0px;">
+                <div class="row" style="padding-bottom:2px;">
+                  <div class="ml-1"></div>
+                  <div class="ml-auto mr-0 text-end">
+                      <svg xmlns="http://www.w3.org/2000/svg" (click)="closefromWL(comp[0])" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                      </svg>
+                  </div>
+                </div>
+  
+  
+                <div class="container-fluid">
+                  <div class="row">
+                      <span class="card-title inline-style">
+                        {{comp[0]}}
+                      </span>
+  
+                      <span *ngIf="comp[3]>0; else elseBlock" class="card-title inline-style pos-change text-end">
+                        <p class="card-text float-right">{{comp[2]}}</p>
+                      </span>
+  
+                      <ng-template #elseBlock>
+                        <span class="card-title inline-style neg-change text-end">
+                          <p class="card-text float-right">{{comp[2]}}</p>
+                        </span>
+                      </ng-template>
+                  </div>
+  
+                  <div class="row">
+                    <span class="inline-style">
+                      <p class="card-text">{{comp[1]}}</p>
+                    </span>
+                    <span class="inline-style text-end" *ngIf="comp[3]>0; else elseBlock1">
+                      <p class="card-text float-right">
+                        <svg xmlns="http://www.w3.org/2000/svg" style="margin-top: 0rem;" width="16" height="16" fill="currentColor" class="bi bi-caret-up-fill" viewBox="0 0 16 16" id="positive-caret">
+                          <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/>
+                        </svg>
+                        <span class="pos-change">{{comp[3]}} ({{comp[4]}})</span></p>
+                    </span>
+                      <ng-template #elseBlock1>
+                        <span class="inline-style text-end">
+                          <p class="card-text float-right">
+                            <svg xmlns="http://www.w3.org/2000/svg"  style="margin-top: 0rem;" width="16" height="16" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 0 16 16" id="negative-caret">
+                              <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+                            </svg>
+                          <span class="neg-change">{{comp[3]}} ({{comp[4]}})</span></p>
+                        </span>
+                      </ng-template>
+                  </div>
+                </div>
+  
+  
+                </div>
+  
+                <!-- <span class="pull-right clickable close-icon" data-effect="fadeOut"><i class="fa fa-times"></i></span> -->
+              </div>
+          </div>
+  
+    </ng-template>
+    <!-- </div> -->
+  
+  
+  
+  </div>

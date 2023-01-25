@@ -1,0 +1,186 @@
+<div class="container" style="padding: 0% 10%;  margin-top: 4rem;">
+    <h1>My Portfolio</h1>
+    <h3>Money in Wallet:$ {{walletamount | number: '1.1-2'}}</h3>
+    <div *ngIf="this.stocks.length===0; else elseBlock">
+      <div class='alert alert-warning'>
+        Currently you don't have any stock in your watchlist
+      </div>
+    </div>
+    <ng-template #elseBlock>
+      <div *ngFor="let comp of stocks | keyvalue">
+        <div class="card my-3" id="{{ 'pcard' + comp.key }}">
+          <h3 class="card-header">{{comp.key}} <span class="text-muted">{{comp.value.Sname}}</span></h3>
+          <div class="card-body">
+            <div class="container">
+              <div class="row">
+                <div class="col-sm">
+                  <p class="card-text">Quantity:<span class="value">{{comp.value.Quantity}}</span></p>
+                </div>
+                <div *ngIf= "((comp.value.Latestprice * comp.value.Quantity) - comp.value.Totalcost)>0; else elseBlock" class="col-sm">
+                    <div class="col-sm">
+                        <p class="card-text">Change:<span class="value pos-color">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-up-fill" viewBox="0 0 16 16" id="positive-caret">
+                              <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/>
+                            </svg>{{(comp.value.Latestprice * comp.value.Quantity) - comp.value.Totalcost | number: '1.1-2'}}</span></p>
+                    </div>
+                   </div>
+                </div> 
+                <ng-template #elseBlock>
+                  <div class="col-sm">
+                    <p class="card-text">Change:<span class="value neg-color"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 0 16 16">
+                      <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+                    </svg>{{ comp.value.Totalcost - (comp.value.Latestprice * comp.value.Quantity) | number: '1.1-2'}}</span></p>
+                  </div>
+                </ng-template> 
+  
+              <div class="row">
+                <div  class="col-sm">
+                   <p class="card-text">Avg Cost/ Share<span class="value">{{comp.value.Avgprice | number: '1.1-2'}}</span></p>
+                </div>
+                <div  class="col-sm">
+                  <p class="card-text">Current Price:<span class="value neg-color">{{comp.value.Latestprice}}</span></p>
+                </div>
+                <!-- <ng-template #elseBlock>
+                  <div class="col-sm">
+                    <p class="card-text">Current Price:<span class="value neg-color">{{comp['currentpric']}}</span></p>
+                  </div>
+                </ng-template> -->
+              </div>
+              <div class="row">
+                <div class="col-sm">
+                   <p class="card-text">Total Cost:<span class="value">{{comp.value.Totalcost | number: '1.1-2'}}</span></p>
+                </div>
+                <div  class="col-sm">
+                  <p class="card-text">Market Value:<span class="value pos-color">{{comp.value.Latestprice * comp.value.Quantity | number: '1.1-2'}}</span></p>
+                </div>
+                <!-- <ng-template #elseBlock>
+                  <div class="col-sm">
+                    <p class="card-text">Market Value:<span class="value neg-color">{{comp['mv']}}</span></p>
+                  </div>
+                </ng-template> -->
+              </div>
+  
+            </div>
+  
+  
+          </div>
+          <div class="card-footer text-muted ">
+            <a class="btn btn-danger sell-button float-right" (click)="openSellModal(sellcontent,comp.key)" style="color: white;">Sell</a>
+            <a class="btn btn-primary float-right" (click)="openModal(buycontent)" style="color: white; margin-right: 0.5em;">Buy</a>
+            
+            <ng-template #buycontent let-modal>
+                <div class="modal-header">
+                    <p class="modal-title" id="modal-basic-title">{{comp.key}}
+                    </p>
+                    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body modal-content">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <label>Current Price: {{comp.value.Latestprice}}</label>
+                            </div>
+                            <!-- <div class="col">
+                                <label [(ngModel)]="walletamount"></label>
+                            </div> -->
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label>Money in Wallet: {{walletamount | number: '1.1-2'}}</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                          <div class=" col-sm-2 quantity-label" style="margin-top:0.5em">
+                            <label for="quantity">Quantity </label>
+                        </div>
+                        <div class=" col-sm-5">
+                            <input type='number' class="form-control" required id="quantity" name="quantity"
+                                [(ngModel)]="quantity">
+                        </div>
+                        </div>
+                        <div class="row">
+                          <p style="padding-top: 0.5em;" class="text-danger" *ngIf= "(comp.value.Latestprice * quantity) > walletamount"> 
+                              Not enough money in wallet!
+                          </p>
+                      </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="container">
+                        <div class="row justify-content-space-between">
+                            <div class="col">
+                                <label>Total : {{ comp.value.Latestprice * quantity | number: '1.1-2'}}</label>
+                            </div>
+                            <div class="col text-end">
+                                <button type="button" class="btn btn-success" [disabled]="quantity<1 || (comp.value.Latestprice * quantity) > walletamount"
+                                    (click)="closeModal(comp.key)">Buy</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+
+            <ng-template #sellcontent let-modal>
+                <div class="modal-header">
+                    <p class="modal-title" id="modal-basic-title">{{comp.key}}
+                    </p>
+                    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body modal-content">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <label>Current Price: {{comp.value.Latestprice}}</label>
+                            </div>
+                            <!-- <div class="col">
+                                <label [(ngModel)]="walletamount"></label>
+                            </div> -->
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label>Money in Wallet: {{walletamount | number: '1.1-2'}}</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                          <div class=" col-sm-2 quantity-label" style="margin-top:0.5em">
+                            <label for="quantity">Quantity </label>
+                        </div>
+                        <div class=" col-sm-5">
+                            <input type='number' class="form-control" required id="quantity" name="quantity"
+                                [(ngModel)]="quantity">
+                        </div>
+                        </div>
+                        <div class="row">
+                          <p style="padding-top: 0.5em;" class="text-danger" *ngIf= "quantity>maxsellqnt"> 
+                              You Cannot Sell quantity you dont have!
+                          </p>
+                      </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="container">
+                        <div class="row justify-content-space-between">
+                            <div class="col">
+                                <label>Total : {{ comp.value.Latestprice * quantity | number: '1.1-2'}}</label>
+                            </div>
+                            <div class="col text-end">
+                                <button type="button" class="btn btn-success" [disabled]="quantity<1 || quantity>maxsellqnt"
+                                    (click)="closesellModal(comp.key)">Sell</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+
+          </div>
+  
+        </div>
+       </div> 
+  
+    </ng-template> 
+  </div>
+

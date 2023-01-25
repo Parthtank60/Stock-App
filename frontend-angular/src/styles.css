@@ -1,0 +1,15 @@
+/* You can add global styles to this file, and also import other style files */
+
+
+body {
+	background: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255,255,255,0.92)), url('../src/app/assets/background-graph.jpg') no-repeat center center fixed;
+	background-size: cover;
+	min-height: 100%;
+	height: auto;
+	width: 100%;
+	background-position-x: 0%;
+	background-position-y: 0%;
+	margin-bottom: -1em;
+}
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

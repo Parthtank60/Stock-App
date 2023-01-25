@@ -1,0 +1,35 @@
+.right-align
+{
+  text-align: right !important;
+}
+
+
+.card-title{
+  font-size: 25px;
+  font-weight: bold;
+}
+
+#positive-caret{
+  filter: invert(23%) sepia(94%) saturate(5978%) hue-rotate(138deg) brightness(100%) contrast(82%);
+  margin-top:5px;
+}
+
+.pos-change{
+  color:#178720;
+}
+
+.neg-change{
+  color:#ad0916;
+}
+#negative-caret{
+  filter: invert(8%) sepia(82%) saturate(6788%) hue-rotate(351deg) brightness(95%) contrast(97%);
+}
+
+.inline-style{
+  display: inline-block;
+  width: 50%;
+}
+
+.cross-btn{
+  float:right;
+}
